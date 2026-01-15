@@ -1,6 +1,6 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const QuickActions = () => {
   const navigation = useNavigation<any>();
@@ -9,7 +9,7 @@ const QuickActions = () => {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("AddExpense")}
+        onPress={() => navigation.navigate('AddExpense')}
       >
         <Text>Add Expense</Text>
       </TouchableOpacity>
@@ -21,6 +21,13 @@ const QuickActions = () => {
       <TouchableOpacity style={styles.button}>
         <Text>Budget</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Categories')}
+      >
+        <Text>Categories</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -29,12 +36,12 @@ export default QuickActions;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginVertical: 16,
   },
   button: {
-    backgroundColor: "#E3F2FD",
+    backgroundColor: '#E3F2FD',
     padding: 12,
     borderRadius: 10,
   },
