@@ -1,19 +1,25 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const QuickActions = () => {
+  const navigation = useNavigation<any>();
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("AddExpense")}
+      >
         <Text>Add Expense</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button}>
-        <Text>View Reports</Text>
+        <Text>Reports</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button}>
-        <Text>Set Budget</Text>
+        <Text>Budget</Text>
       </TouchableOpacity>
     </View>
   );

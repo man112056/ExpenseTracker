@@ -1,8 +1,8 @@
 import React from "react";
-import DashboardScreen from "./src/screens/DashboardScreen";
+import AppNavigator from "./src/navigation/AppNavigator";
 
 const App = () => {
-  return <DashboardScreen />;
+  return <AppNavigator />;
 };
 
 export default App;
