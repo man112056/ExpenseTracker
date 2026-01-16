@@ -10,14 +10,16 @@ const BudgetProgress: React.FC<BudgetProgressProps> = ({
   used,
   total,
 }) => {
-  const progress = (used / total) * 100;
+  const progress = total > 0 ? (used / total) * 100 : 0;
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Monthly Budget</Text>
 
       <View style={styles.progressBar}>
-        <View style={[styles.progress, { width: `${progress}%` }]} />
+        <View
+          style={[styles.progress, { width: `${progress}%` }]}
+        />
       </View>
 
       <Text style={styles.text}>
@@ -28,7 +30,6 @@ const BudgetProgress: React.FC<BudgetProgressProps> = ({
 };
 
 export default BudgetProgress;
-
 
 const styles = StyleSheet.create({
   container: {
