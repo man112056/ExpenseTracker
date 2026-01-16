@@ -1,7 +1,15 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const BudgetProgress = ({ used, total }) => {
+interface BudgetProgressProps {
+  used: number;
+  total: number;
+}
+
+const BudgetProgress: React.FC<BudgetProgressProps> = ({
+  used,
+  total,
+}) => {
   const progress = (used / total) * 100;
 
   return (
@@ -20,6 +28,7 @@ const BudgetProgress = ({ used, total }) => {
 };
 
 export default BudgetProgress;
+
 
 const styles = StyleSheet.create({
   container: {

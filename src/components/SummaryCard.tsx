@@ -1,7 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const SummaryCard = ({ title, amount, color }) => {
+interface SummaryCardProps {
+  title: string;
+  amount: number;
+  color: string;
+}
+
+const SummaryCard: React.FC<SummaryCardProps> = ({
+  title,
+  amount,
+  color,
+}) => {
   return (
     <View style={[styles.card, { borderLeftColor: color }]}>
       <Text style={styles.title}>{title}</Text>
