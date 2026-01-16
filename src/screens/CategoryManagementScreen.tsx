@@ -7,6 +7,7 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
+import { useTheme } from "../theme/ThemeContext";
 import { Category } from "../types/models";
 import { getCategories, saveCategories } from "../utils/storage";
 
@@ -14,6 +15,7 @@ const CategoryManagementScreen = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [name, setName] = useState("");
   const [budget, setBudget] = useState("");
+  const { colors } = useTheme();
 
   /* ---------- LOAD CATEGORIES ---------- */
   useEffect(() => {
@@ -54,10 +56,10 @@ const CategoryManagementScreen = () => {
 
   /* ---------- UI ---------- */
   const renderItem = ({ item }: { item: Category }) => (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: colors.card }]}> 
       <View>
-        <Text style={styles.catName}>{item.name}</Text>
-        <Text style={styles.budget}>Budget: ₹{item.budget}</Text>
+        <Text style={[styles.catName, { color: colors.text }]}>{item.name}</Text>
+        <Text style={[styles.budget, { color: colors.secondaryText }]}>Budget: ₹{item.budget}</Text>
       </View>
 
       <TouchableOpacity onPress={() => deleteCategory(item.id)}>
@@ -67,25 +69,30 @@ const CategoryManagementScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Manage Categories</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}> 
+      <Text style={[styles.title, { color: colors.text }]}>Manage Categories</Text>
 
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
         placeholder="Category name"
+        placeholderTextColor={colors.secondaryText}
         value={name}
         onChangeText={setName}
       />
 
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
         placeholder="Budget limit"
+        placeholderTextColor={colors.secondaryText}
         keyboardType="numeric"
         value={budget}
         onChangeText={setBudget}
       />
 
-      <TouchableOpacity style={styles.addButton} onPress={addCategory}>
+      <TouchableOpacity
+        style={[styles.addButton, { backgroundColor: "#4CAF50" }]}
+        onPress={addCategory}
+      >
         <Text style={styles.addText}>Add Category</Text>
       </TouchableOpacity>
 
@@ -94,7 +101,7 @@ const CategoryManagementScreen = () => {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListEmptyComponent={
-          <Text style={styles.empty}>No categories added yet</Text>
+          <Text style={[styles.empty, { color: colors.secondaryText }]}>No categories added yet</Text>
         }
       />
     </View>

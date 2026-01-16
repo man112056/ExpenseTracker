@@ -10,10 +10,12 @@ import {
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Expense } from "../types/models";
 import { getExpenses, saveExpenses } from "../utils/storage";
+import { useTheme } from "../theme/ThemeContext";
 
 const ExpenseListScreen = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const navigation = useNavigation<any>();
+  const { colors } = useTheme();
 
   useFocusEffect(
     useCallback(() => {
@@ -47,17 +49,17 @@ const ExpenseListScreen = () => {
 
   const renderItem = ({ item }: { item: Expense }) => (
     <TouchableOpacity
-      style={styles.card}
+      style={[styles.card, { backgroundColor: colors.card }]}
       onPress={() =>
         navigation.navigate("Add Expense", { expense: item })
       }
     >
       <View>
-        <Text style={styles.amount}>₹{item.amount}</Text>
-        <Text style={styles.category}>{item.category}</Text>
-        <Text style={styles.date}>{item.date}</Text>
+        <Text style={[styles.amount, { color: colors.text }]}>₹{item.amount}</Text>
+        <Text style={[styles.category, { color: colors.secondaryText }]}>{item.category}</Text>
+        <Text style={[styles.date, { color: colors.secondaryText }]}>{item.date}</Text>
         {item.description ? (
-          <Text style={styles.desc}>{item.description}</Text>
+          <Text style={[styles.desc, { color: colors.text }]}>{item.description}</Text>
         ) : null}
       </View>
 
@@ -68,13 +70,13 @@ const ExpenseListScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}> 
       <FlatList
         data={expenses}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListEmptyComponent={
-          <Text style={styles.empty}>No expenses added yet</Text>
+          <Text style={[styles.empty, { color: colors.secondaryText }]}>No expenses added yet</Text>
         }
       />
     </View>
@@ -92,7 +94,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#EEF2F7",
   },
   card: {
-    backgroundColor: "#fff",
     padding: 16,
     borderRadius: 14,
     marginVertical: 6,
@@ -105,16 +106,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   category: {
-    color: "#666",
     marginTop: 4,
   },
   date: {
     fontSize: 12,
-    color: "#999",
   },
   desc: {
     marginTop: 4,
-    color: "#444",
   },
   delete: {
     color: "#F44336",

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
+import { useTheme } from "../theme/ThemeContext";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Expense, Category } from "../types/models";
 import { getExpenses, saveExpenses, getCategories } from "../utils/storage";
@@ -79,44 +80,59 @@ const AddExpenseScreen = () => {
     navigation.goBack();
   };
 
+  const { colors } = useTheme();
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.label}>Amount</Text>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
+      <Text style={[styles.label, { color: colors.text }]}>Amount</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
+        placeholderTextColor={colors.secondaryText}
         keyboardType="numeric"
         value={amount}
         onChangeText={setAmount}
       />
 
-      <Text style={styles.label}>Date</Text>
-      <TextInput style={styles.input} value={date} onChangeText={setDate} />
+      <Text style={[styles.label, { color: colors.text }]}>Date</Text>
+      <TextInput
+        style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
+        placeholderTextColor={colors.secondaryText}
+        value={date}
+        onChangeText={setDate}
+      />
 
-      <Text style={styles.label}>Category</Text>
+      <Text style={[styles.label, { color: colors.text }]}>Category</Text>
       <View style={styles.row}>
         {categories.map((c) => (
           <TouchableOpacity
             key={c.id}
             style={[
               styles.chip,
-              category === c.name && styles.selected,
+              { backgroundColor: colors.card },
+              category === c.name && [styles.selected, { backgroundColor: "#90CAF9" }],
             ]}
             onPress={() => setCategory(c.name)}
           >
-            <Text>{c.name}</Text>
+            <Text style={{ color: colors.text }}>{c.name}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text style={styles.label}>Description</Text>
+      <Text style={[styles.label, { color: colors.text }]}>Description</Text>
       <TextInput
-        style={[styles.input, styles.textArea]}
+        style={[styles.input, styles.textArea, { backgroundColor: colors.card, color: colors.text }]}
+        placeholderTextColor={colors.secondaryText}
         multiline
         value={description}
         onChangeText={setDescription}
       />
 
-      <TouchableOpacity style={styles.saveButton} onPress={saveExpense}>
+      <TouchableOpacity
+        style={[styles.saveButton, { backgroundColor: "#2196F3" }]}
+        onPress={saveExpense}
+      >
         <Text style={styles.saveText}>
           {editingExpense ? "Update Expense" : "Save Expense"}
         </Text>

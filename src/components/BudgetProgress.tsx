@@ -16,17 +16,13 @@ const BudgetProgress: React.FC<BudgetProgressProps> = ({
 
   return (
     <View style={[styles.container, { backgroundColor: colors.card }]}>
-      <Text style={[styles.label, { color: colors.text }]}>
-        Monthly Budget
-      </Text>
+      <Text style={[styles.label, { color: colors.text }]}>Monthly Budget</Text>
 
-      <View style={styles.progressBar}>
+      <View style={[styles.progressBar, { backgroundColor: colors.secondaryText }]}>
         <View style={[styles.progress, { width: `${progress}%` }]} />
       </View>
 
-      <Text style={[styles.text, { color: colors.secondaryText }]}>
-        ₹{used} / ₹{total}
-      </Text>
+      <Text style={[styles.text, { color: colors.secondaryText }]}>₹{used} / ₹{total}</Text>
     </View>
   );
 };
