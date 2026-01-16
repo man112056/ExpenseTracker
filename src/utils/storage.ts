@@ -4,6 +4,7 @@ import { Expense, Category } from "../types/models";
 const EXPENSES_KEY = "EXPENSES";
 const CATEGORIES_KEY = "CATEGORIES";
 const INCOME_KEY = "INCOME";
+const PROFILE_IMAGE_KEY = "PROFILE_IMAGE";
 
 /* ---------- EXPENSES ---------- */
 
@@ -65,5 +66,26 @@ export const getIncome = async (): Promise<number> => {
   } catch (err) {
     console.error("getIncome error:", err);
     throw new Error("Unable to load income.");
+  }
+};
+
+/* ---------- PROFILE IMAGE ---------- */
+
+export const saveProfileImage = async (uri: string) => {
+  try {
+    await AsyncStorage.setItem(PROFILE_IMAGE_KEY, uri);
+  } catch (err) {
+    console.error("saveProfileImage error:", err);
+    throw new Error("Unable to save profile image.");
+  }
+};
+
+export const getProfileImage = async (): Promise<string | null> => {
+  try {
+    const data = await AsyncStorage.getItem(PROFILE_IMAGE_KEY);
+    return data || null;
+  } catch (err) {
+    console.error("getProfileImage error:", err);
+    throw new Error("Unable to load profile image.");
   }
 };
