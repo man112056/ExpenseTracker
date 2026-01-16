@@ -1,25 +1,32 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, Image, Switch } from "react-native";
+import { useTheme } from "../theme/ThemeContext";
 
 const ProfileScreen = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme, toggleTheme, colors } = useTheme();
 
   return (
-    <View style={styles.container}>
-      {/* Profile Image */}
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Image
         source={{ uri: "https://i.pravatar.cc/150" }}
         style={styles.avatar}
       />
 
-      {/* User Info */}
-      <Text style={styles.name}>Manish Kumar</Text>
-      <Text style={styles.contact}>📞 +91 9876543210</Text>
+      <Text style={[styles.name, { color: colors.text }]}>
+        Manish Kumar
+      </Text>
+      <Text style={[styles.contact, { color: colors.secondaryText }]}>
+        +91 9876543210
+      </Text>
 
-      {/* Theme Switch */}
-      <View style={styles.themeRow}>
-        <Text style={styles.themeText}>Dark Mode</Text>
-        <Switch value={darkMode} onValueChange={setDarkMode} />
+      <View style={styles.row}>
+        <Text style={[styles.label, { color: colors.text }]}>
+          Dark Mode
+        </Text>
+        <Switch
+          value={theme === "dark"}
+          onValueChange={toggleTheme}
+        />
       </View>
     </View>
   );
@@ -32,7 +39,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingTop: 40,
-    backgroundColor: "#F5F5F5",
   },
   avatar: {
     width: 120,
@@ -46,15 +52,14 @@ const styles = StyleSheet.create({
   },
   contact: {
     fontSize: 14,
-    color: "#555",
     marginVertical: 8,
   },
-  themeRow: {
+  row: {
     marginTop: 30,
     flexDirection: "row",
     alignItems: "center",
   },
-  themeText: {
+  label: {
     fontSize: 16,
     marginRight: 12,
   },

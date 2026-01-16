@@ -8,8 +8,11 @@ import QuickActions from "../components/QuickActions";
 
 import { Expense, Category } from "../types/models";
 import { getExpenses, getCategories } from "../utils/storage";
+import { useTheme } from "../theme/ThemeContext";
 
 const DashboardScreen = () => {
+  const { colors } = useTheme();
+
   const [totalExpense, setTotalExpense] = useState(0);
   const [totalIncome] = useState(50000); // placeholder income
   const [budgetTotal, setBudgetTotal] = useState(0);
@@ -42,7 +45,12 @@ const DashboardScreen = () => {
   const savings = totalIncome - totalExpense;
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={[
+        styles.container,
+        { backgroundColor: colors.background },
+      ]}
+    >
       {/* Summary Cards */}
       <View style={styles.row}>
         <SummaryCard
@@ -80,11 +88,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#EEF2F7",
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
 });
-
