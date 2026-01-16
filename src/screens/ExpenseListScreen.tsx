@@ -24,8 +24,13 @@ const ExpenseListScreen = () => {
   );
 
   const loadExpenses = async () => {
-    const stored = await getExpenses();
-    setExpenses(stored.reverse()); // latest first
+    try {
+      const stored = await getExpenses();
+      setExpenses(stored.reverse()); // latest first
+    } catch (err) {
+      console.error("loadExpenses error:", err);
+      Alert.alert("Error", "Failed to load expenses.");
+    }
   };
 
   const deleteExpense = (id: string) => {
@@ -38,9 +43,14 @@ const ExpenseListScreen = () => {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            const updated = expenses.filter((e) => e.id !== id);
-            setExpenses(updated);
-            await saveExpenses(updated);
+            try {
+              const updated = expenses.filter((e) => e.id !== id);
+              setExpenses(updated);
+              await saveExpenses(updated);
+            } catch (err) {
+              console.error("deleteExpense error:", err);
+              Alert.alert("Error", "Failed to delete expense.");
+            }
           },
         },
       ]

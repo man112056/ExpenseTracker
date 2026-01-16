@@ -42,13 +42,6 @@ const QuickActions = () => {
         color={colors.text}
       />
 
-      <ActionButton
-        label="Expenses"
-        onPress={() => navigation.navigate("Expenses")}
-        bg={colors.card}
-        color={colors.text}
-      />
-
     </View>
   );
 };

@@ -28,16 +28,25 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const loadTheme = async () => {
-    const saved = await AsyncStorage.getItem(THEME_KEY);
-    if (saved === "dark") {
-      setTheme("dark");
+    try {
+      const saved = await AsyncStorage.getItem(THEME_KEY);
+      if (saved === "dark") {
+        setTheme("dark");
+      }
+    } catch (err) {
+      console.error("loadTheme error:", err);
+      // keep default theme
     }
   };
 
   const toggleTheme = async () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
-    await AsyncStorage.setItem(THEME_KEY, newTheme);
+    try {
+      await AsyncStorage.setItem(THEME_KEY, newTheme);
+    } catch (err) {
+      console.error("toggleTheme error:", err);
+    }
   };
 
   const colors =

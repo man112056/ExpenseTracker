@@ -12,13 +12,22 @@ const BudgetProgress: React.FC<BudgetProgressProps> = ({
   total,
 }) => {
   const { colors } = useTheme();
-  const progress = total > 0 ? (used / total) * 100 : 0;
+  const progress = total > 0 ? Math.min(100, (used / total) * 100) : 0;
+
+  if (total <= 0) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.card }]}> 
+        <Text style={[styles.label, { color: colors.text }]}>Monthly Budget</Text>
+        <Text style={[styles.noBudget, { color: colors.secondaryText }]}>No budgets configured. Add categories with budgets to see progress.</Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.card }]}>
+    <View style={[styles.container, { backgroundColor: colors.card }]}> 
       <Text style={[styles.label, { color: colors.text }]}>Monthly Budget</Text>
 
-      <View style={[styles.progressBar, { backgroundColor: colors.secondaryText }]}>
+      <View style={[styles.progressBar, { backgroundColor: '#2E2E2E' }]}>
         <View style={[styles.progress, { width: `${progress}%` }]} />
       </View>
 
@@ -38,6 +47,10 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: "600",
     marginBottom: 8,
+  },
+  noBudget: {
+    marginTop: 8,
+    fontSize: 13,
   },
   progressBar: {
     height: 10,

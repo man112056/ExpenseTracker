@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useTheme } from "../theme/ThemeContext";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -37,47 +38,56 @@ const AddExpenseScreen = () => {
   }, []);
 
   const loadCategories = async () => {
-    const stored = await getCategories();
-    setCategories(stored);
-    if (stored.length > 0 && !editingExpense) {
-      setCategory(stored[0].name);
+    try {
+      const stored = await getCategories();
+      setCategories(stored);
+      if (stored.length > 0 && !editingExpense) {
+        setCategory(stored[0].name);
+      }
+    } catch (err) {
+      console.error("loadCategories error:", err);
+      Alert.alert("Error", "Failed to load categories.");
     }
   };
 
   const saveExpense = async () => {
     if (!amount || !category) return;
+    try {
+      const expenses = await getExpenses();
 
-    const expenses = await getExpenses();
+      let updated: Expense[];
 
-    let updated: Expense[];
+      if (editingExpense) {
+        updated = expenses.map((e) =>
+          e.id === editingExpense.id
+            ? {
+                ...e,
+                amount: Number(amount),
+                date,
+                category,
+                description,
+              }
+            : e
+        );
+      } else {
+        updated = [
+          ...expenses,
+          {
+            id: Date.now().toString(),
+            amount: Number(amount),
+            date,
+            category,
+            description,
+          },
+        ];
+      }
 
-    if (editingExpense) {
-      updated = expenses.map((e) =>
-        e.id === editingExpense.id
-          ? {
-              ...e,
-              amount: Number(amount),
-              date,
-              category,
-              description,
-            }
-          : e
-      );
-    } else {
-      updated = [
-        ...expenses,
-        {
-          id: Date.now().toString(),
-          amount: Number(amount),
-          date,
-          category,
-          description,
-        },
-      ];
+      await saveExpenses(updated);
+      navigation.goBack();
+    } catch (err) {
+      console.error("saveExpense error:", err);
+      Alert.alert("Error", "Failed to save expense.");
     }
-
-    await saveExpenses(updated);
-    navigation.goBack();
   };
 
   const { colors } = useTheme();

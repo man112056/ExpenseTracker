@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { useTheme } from "../theme/ThemeContext";
 import { Category } from "../types/models";
@@ -40,18 +41,28 @@ const CategoryManagementScreen = () => {
       },
     ];
 
-    setCategories(updated);
-    await saveCategories(updated);
+    try {
+      setCategories(updated);
+      await saveCategories(updated);
 
-    setName("");
-    setBudget("");
+      setName("");
+      setBudget("");
+    } catch (err) {
+      console.error("addCategory error:", err);
+      Alert.alert("Error", "Failed to add category.");
+    }
   };
 
   /* ---------- DELETE CATEGORY ---------- */
   const deleteCategory = async (id: string) => {
-    const updated = categories.filter((item) => item.id !== id);
-    setCategories(updated);
-    await saveCategories(updated);
+    try {
+      const updated = categories.filter((item) => item.id !== id);
+      setCategories(updated);
+      await saveCategories(updated);
+    } catch (err) {
+      console.error("deleteCategory error:", err);
+      Alert.alert("Error", "Failed to delete category.");
+    }
   };
 
   /* ---------- UI ---------- */
