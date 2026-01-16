@@ -7,56 +7,76 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import { Expense, Category } from "../types/models";
 import { getExpenses, saveExpenses, getCategories } from "../utils/storage";
 
 const AddExpenseScreen = () => {
+  const route = useRoute<any>();
+  const navigation = useNavigation<any>();
+  const editingExpense: Expense | undefined = route.params?.expense;
+
   const [amount, setAmount] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [category, setCategory] = useState("");
-  const [customCategory, setCustomCategory] = useState("");
 
-  /* ---------- LOAD CATEGORIES ---------- */
   useEffect(() => {
     loadCategories();
+
+    if (editingExpense) {
+      setAmount(String(editingExpense.amount));
+      setDate(editingExpense.date);
+      setDescription(editingExpense.description || "");
+      setCategory(editingExpense.category);
+    } else {
+      setDate(new Date().toISOString().split("T")[0]);
+    }
   }, []);
 
   const loadCategories = async () => {
     const stored = await getCategories();
     setCategories(stored);
-    if (stored.length > 0) {
+    if (stored.length > 0 && !editingExpense) {
       setCategory(stored[0].name);
     }
   };
 
-  /* ---------- SAVE EXPENSE ---------- */
   const saveExpense = async () => {
     if (!amount || !category) return;
 
-    const finalCategory =
-      category === "Other" ? customCategory : category;
+    const expenses = await getExpenses();
 
-    if (!finalCategory) return;
+    let updated: Expense[];
 
-    const newExpense: Expense = {
-      id: Date.now().toString(),
-      amount: Number(amount),
-      date,
-      category: finalCategory,
-      description,
-    };
-
-    const existing = await getExpenses();
-    const updated = [...existing, newExpense];
+    if (editingExpense) {
+      updated = expenses.map((e) =>
+        e.id === editingExpense.id
+          ? {
+              ...e,
+              amount: Number(amount),
+              date,
+              category,
+              description,
+            }
+          : e
+      );
+    } else {
+      updated = [
+        ...expenses,
+        {
+          id: Date.now().toString(),
+          amount: Number(amount),
+          date,
+          category,
+          description,
+        },
+      ];
+    }
 
     await saveExpenses(updated);
-
-    // reset form
-    setAmount("");
-    setDescription("");
-    setCustomCategory("");
+    navigation.goBack();
   };
 
   return (
@@ -65,64 +85,41 @@ const AddExpenseScreen = () => {
       <TextInput
         style={styles.input}
         keyboardType="numeric"
-        placeholder="Enter amount"
         value={amount}
         onChangeText={setAmount}
       />
 
       <Text style={styles.label}>Date</Text>
-      <TextInput
-        style={styles.input}
-        value={date}
-        onChangeText={setDate}
-      />
+      <TextInput style={styles.input} value={date} onChangeText={setDate} />
 
       <Text style={styles.label}>Category</Text>
-      <View style={styles.categoryRow}>
-        {categories.map((cat) => (
+      <View style={styles.row}>
+        {categories.map((c) => (
           <TouchableOpacity
-            key={cat.id}
+            key={c.id}
             style={[
               styles.chip,
-              category === cat.name && styles.selectedChip,
+              category === c.name && styles.selected,
             ]}
-            onPress={() => setCategory(cat.name)}
+            onPress={() => setCategory(c.name)}
           >
-            <Text>{cat.name}</Text>
+            <Text>{c.name}</Text>
           </TouchableOpacity>
         ))}
-
-        <TouchableOpacity
-          style={[
-            styles.chip,
-            category === "Other" && styles.selectedChip,
-          ]}
-          onPress={() => setCategory("Other")}
-        >
-          <Text>Other</Text>
-        </TouchableOpacity>
       </View>
 
-      {category === "Other" && (
-        <TextInput
-          style={styles.input}
-          placeholder="Custom category"
-          value={customCategory}
-          onChangeText={setCustomCategory}
-        />
-      )}
-
-      <Text style={styles.label}>Description / Notes</Text>
+      <Text style={styles.label}>Description</Text>
       <TextInput
         style={[styles.input, styles.textArea]}
         multiline
-        placeholder="Optional notes"
         value={description}
         onChangeText={setDescription}
       />
 
       <TouchableOpacity style={styles.saveButton} onPress={saveExpense}>
-        <Text style={styles.saveText}>Save Expense</Text>
+        <Text style={styles.saveText}>
+          {editingExpense ? "Update Expense" : "Save Expense"}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -135,7 +132,7 @@ export default AddExpenseScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#EEF2F7",
   },
   label: {
     marginTop: 12,
@@ -150,7 +147,7 @@ const styles = StyleSheet.create({
   textArea: {
     height: 80,
   },
-  categoryRow: {
+  row: {
     flexDirection: "row",
     flexWrap: "wrap",
     marginVertical: 8,
@@ -161,7 +158,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     margin: 4,
   },
-  selectedChip: {
+  selected: {
     backgroundColor: "#90CAF9",
   },
   saveButton: {

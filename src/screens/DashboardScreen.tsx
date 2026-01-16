@@ -80,10 +80,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#EEF2F7",
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
 });
+

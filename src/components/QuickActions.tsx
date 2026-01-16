@@ -1,48 +1,81 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const QuickActions = () => {
   const navigation = useNavigation<any>();
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('AddExpense')}
-      >
-        <Text>Add Expense</Text>
-      </TouchableOpacity>
+      <ActionButton
+        label="Add Expense"
+        onPress={() => navigation.navigate("Add Expense")}
+      />
 
-      <TouchableOpacity style={styles.button}>
-        <Text>Reports</Text>
-      </TouchableOpacity>
+      <ActionButton
+        label="Categories"
+        onPress={() => navigation.navigate("Categories")}
+      />
 
-      <TouchableOpacity style={styles.button}>
-        <Text>Budget</Text>
-      </TouchableOpacity>
+      <ActionButton
+        label="Budget"
+        onPress={() => navigation.navigate("Categories")}
+      />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Categories')}
-      >
-        <Text>Categories</Text>
-      </TouchableOpacity>
+      <ActionButton
+        label="Reports"
+        onPress={() => navigation.navigate("Dashboard")}
+      />
+
+      <ActionButton
+  label="Expenses"
+  onPress={() => navigation.navigate("Expenses")}
+/>
+
     </View>
   );
 };
 
+const ActionButton = ({
+  label,
+  onPress,
+}: {
+  label: string;
+  onPress: () => void;
+}) => (
+  <TouchableOpacity style={styles.button} onPress={onPress}>
+    <Text style={styles.buttonText}>{label}</Text>
+  </TouchableOpacity>
+);
+
 export default QuickActions;
+
+/* ---------- STYLES ---------- */
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: 16,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginTop: 12,
   },
   button: {
-    backgroundColor: '#E3F2FD',
-    padding: 12,
-    borderRadius: 10,
+    width: "48%",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 18,
+    borderRadius: 14,
+    marginVertical: 8,
+    elevation: 3,
+    alignItems: "center",
+  },
+  buttonText: {
+    fontWeight: "600",
+    fontSize: 15,
+    color: "#333",
   },
 });

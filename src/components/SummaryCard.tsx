@@ -23,15 +23,17 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
 export default SummaryCard;
 
 const styles = StyleSheet.create({
+
   card: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 16,
-    margin: 8,
-    borderRadius: 12,
-    borderLeftWidth: 5,
-    elevation: 3,
-  },
+  flex: 1,
+  backgroundColor: "#fff",
+  padding: 18,
+  margin: 8,
+  borderRadius: 16,
+  borderLeftWidth: 6,
+  elevation: 4,
+},
+
   title: {
     fontSize: 14,
     color: "#777",
