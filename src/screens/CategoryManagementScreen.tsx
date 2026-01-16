@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,43 +7,52 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
-
-type Category = {
-  id: string;
-  name: string;
-  budget: string;
-};
+import { Category } from "../types/models";
+import { getCategories, saveCategories } from "../utils/storage";
 
 const CategoryManagementScreen = () => {
-  const [categories, setCategories] = useState<Category[]>([
-    { id: "1", name: "Food", budget: "5000" },
-    { id: "2", name: "Travel", budget: "3000" },
-    { id: "3", name: "Rent", budget: "15000" },
-  ]);
-
+  const [categories, setCategories] = useState<Category[]>([]);
   const [name, setName] = useState("");
   const [budget, setBudget] = useState("");
 
-  const addCategory = () => {
-    if (!name) return;
+  /* ---------- LOAD CATEGORIES ---------- */
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
-    setCategories([
+  const loadCategories = async () => {
+    const stored = await getCategories();
+    setCategories(stored);
+  };
+
+  /* ---------- ADD CATEGORY ---------- */
+  const addCategory = async () => {
+    if (!name.trim()) return;
+
+    const updated: Category[] = [
       ...categories,
       {
         id: Date.now().toString(),
-        name,
-        budget,
+        name: name.trim(),
+        budget: Number(budget) || 0,
       },
-    ]);
+    ];
+
+    setCategories(updated);
+    await saveCategories(updated);
 
     setName("");
     setBudget("");
   };
 
-  const deleteCategory = (id: string) => {
-    setCategories(categories.filter((item) => item.id !== id));
+  /* ---------- DELETE CATEGORY ---------- */
+  const deleteCategory = async (id: string) => {
+    const updated = categories.filter((item) => item.id !== id);
+    setCategories(updated);
+    await saveCategories(updated);
   };
 
+  /* ---------- UI ---------- */
   const renderItem = ({ item }: { item: Category }) => (
     <View style={styles.card}>
       <View>
@@ -61,7 +70,6 @@ const CategoryManagementScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Manage Categories</Text>
 
-      {/* Add Category */}
       <TextInput
         style={styles.input}
         placeholder="Category name"
@@ -81,18 +89,21 @@ const CategoryManagementScreen = () => {
         <Text style={styles.addText}>Add Category</Text>
       </TouchableOpacity>
 
-      {/* Category List */}
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        contentContainerStyle={{ marginTop: 16 }}
+        ListEmptyComponent={
+          <Text style={styles.empty}>No categories added yet</Text>
+        }
       />
     </View>
   );
 };
 
 export default CategoryManagementScreen;
+
+/* ---------- STYLES ---------- */
 
 const styles = StyleSheet.create({
   container: {
@@ -142,5 +153,10 @@ const styles = StyleSheet.create({
   delete: {
     color: "#F44336",
     fontWeight: "600",
+  },
+  empty: {
+    textAlign: "center",
+    marginTop: 20,
+    color: "#777",
   },
 });
