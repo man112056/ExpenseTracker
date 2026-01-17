@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, Switch, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, Image, Switch, TouchableOpacity, Alert, TextInput } from "react-native";
 import { useTheme } from "../theme/ThemeContext";
 import { launchImageLibrary } from 'react-native-image-picker';
-import { getProfileImage, saveProfileImage } from "../utils/storage";
+import { getProfileImage, saveProfileImage, getProfile, saveProfile, Profile } from "../utils/storage";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ route, navigation }: any) => {
+  const { firstTime } = route?.params || {};
   const { theme, toggleTheme, colors } = useTheme();
   const [avatar, setAvatar] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [mobile, setMobile] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -15,6 +18,16 @@ const ProfileScreen = () => {
         setAvatar(uri);
       } catch (err) {
         console.error('Profile load image', err);
+      }
+
+      try {
+        const p = await getProfile();
+        if (p) {
+          setName(p.name || "");
+          setMobile(p.mobile || "");
+        }
+      } catch (err) {
+        console.error('Profile load data', err);
       }
     })();
   }, []);
@@ -35,22 +48,60 @@ const ProfileScreen = () => {
     }
   };
 
+  const onSave = async () => {
+    if (!name.trim()) {
+      Alert.alert('Validation', 'Please enter your name');
+      return;
+    }
+
+    try {
+      const profile: Profile = { name: name.trim(), mobile: mobile.trim() };
+      await saveProfile(profile);
+      if (firstTime) {
+        navigation.replace('MainDrawer');
+      } else {
+        Alert.alert('Saved', 'Profile updated successfully');
+      }
+    } catch (err) {
+      console.error('save profile error', err);
+      Alert.alert('Error', 'Failed to save profile');
+    }
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}> 
       <TouchableOpacity onPress={pickImage}>
         <Image
-          source={{ uri: avatar || "https://i.pravatar.cc/150" }}
+          source={{ uri: avatar || "https://www.gravatar.com/avatar/?d=mp&s=150" }}
           style={styles.avatar}
         />
       </TouchableOpacity>
 
-      <Text style={[styles.name, { color: colors.text }]}>Manish Kumar</Text>
-      <Text style={[styles.contact, { color: colors.secondaryText }]}>+91 9876543210</Text>
+      <TextInput
+        placeholder="Full name"
+        placeholderTextColor={colors.secondaryText}
+        value={name}
+        onChangeText={setName}
+        style={[styles.input, { color: colors.text, borderColor: colors.secondaryText }]}
+      />
+
+      <TextInput
+        placeholder="Mobile number"
+        placeholderTextColor={colors.secondaryText}
+        value={mobile}
+        onChangeText={setMobile}
+        keyboardType="phone-pad"
+        style={[styles.input, { color: colors.text, borderColor: colors.secondaryText }]}
+      />
 
       <View style={styles.row}>
         <Text style={[styles.label, { color: colors.text }]}>Dark Mode</Text>
         <Switch value={theme === "dark"} onValueChange={toggleTheme} />
       </View>
+
+      <TouchableOpacity onPress={onSave} style={[styles.button, { backgroundColor: colors.card }]}> 
+        <Text style={{ color: colors.text, fontWeight: '600' }}>{firstTime ? 'Continue' : 'Save'}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -77,6 +128,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginVertical: 8,
   },
+  input: {
+    width: "90%",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 12,
+  },
   row: {
     marginTop: 30,
     flexDirection: "row",
@@ -85,5 +144,11 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginRight: 12,
+  },
+  button: {
+    marginTop: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
   },
 });

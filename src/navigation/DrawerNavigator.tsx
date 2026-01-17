@@ -48,7 +48,7 @@ const CustomDrawerContent = (props: any) => {
     <DrawerContentScrollView {...props} contentContainerStyle={{ paddingTop: 0 }}>
       <View style={[styles.header, { backgroundColor: colors.card }]}>
         <TouchableOpacity onPress={pickImage}>
-          <Image source={{ uri: avatar || 'https://i.pravatar.cc/80' }} style={styles.avatar} />
+          <Image source={{ uri: avatar || 'https://www.gravatar.com/avatar/?d=mp&s=150' }} style={styles.avatar} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>ExpenseTracker</Text>
         <Text style={[styles.subtitle, { color: colors.secondaryText }]}>Manage your budget</Text>

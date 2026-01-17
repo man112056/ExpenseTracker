@@ -5,6 +5,7 @@ const EXPENSES_KEY = "EXPENSES";
 const CATEGORIES_KEY = "CATEGORIES";
 const INCOME_KEY = "INCOME";
 const PROFILE_IMAGE_KEY = "PROFILE_IMAGE";
+const PROFILE_KEY = "PROFILE";
 
 /* ---------- EXPENSES ---------- */
 
@@ -87,5 +88,29 @@ export const getProfileImage = async (): Promise<string | null> => {
   } catch (err) {
     console.error("getProfileImage error:", err);
     throw new Error("Unable to load profile image.");
+  }
+};
+
+export interface Profile {
+  name: string;
+  mobile: string;
+}
+
+export const saveProfile = async (profile: Profile) => {
+  try {
+    await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  } catch (err) {
+    console.error("saveProfile error:", err);
+    throw new Error("Unable to save profile.");
+  }
+};
+
+export const getProfile = async (): Promise<Profile | null> => {
+  try {
+    const data = await AsyncStorage.getItem(PROFILE_KEY);
+    return data ? JSON.parse(data) : null;
+  } catch (err) {
+    console.error("getProfile error:", err);
+    throw new Error("Unable to load profile.");
   }
 };
