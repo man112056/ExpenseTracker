@@ -70,6 +70,16 @@ export const getIncome = async (): Promise<number> => {
   }
 };
 
+export const hasIncome = async (): Promise<boolean> => {
+  try {
+    const data = await AsyncStorage.getItem(INCOME_KEY);
+    return data !== null;
+  } catch (err) {
+    console.error("hasIncome error:", err);
+    return false;
+  }
+};
+
 /* ---------- PROFILE IMAGE ---------- */
 
 export const saveProfileImage = async (uri: string) => {

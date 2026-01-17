@@ -7,9 +7,8 @@ import BudgetProgress from "../components/BudgetProgress";
 import QuickActions from "../components/QuickActions";
 
 import { Expense, Category } from "../types/models";
-import { getExpenses, getCategories } from "../utils/storage";
+import { getExpenses, getCategories, getIncome, hasIncome } from "../utils/storage";
 import { useTheme } from "../theme/ThemeContext";
-import { getIncome } from "../utils/storage";
 import { useNavigation } from "@react-navigation/native";
 
 const DashboardScreen = () => {
@@ -18,6 +17,7 @@ const DashboardScreen = () => {
 
   const [totalExpense, setTotalExpense] = useState(0);
   const [totalIncome, setTotalIncome] = useState(50000);
+  const [incomePresent, setIncomePresent] = useState(true);
   const [budgetTotal, setBudgetTotal] = useState(0);
 
   /* ---------- LOAD DATA WHEN SCREEN OPENS ---------- */
@@ -32,6 +32,7 @@ const DashboardScreen = () => {
       const expenses: Expense[] = await getExpenses();
       const categories: Category[] = await getCategories();
       const incomeVal = await getIncome();
+      const incomeHas = await hasIncome();
 
       const expenseSum = expenses.reduce((sum, item) => sum + item.amount, 0);
       const budgetSum = categories.reduce((sum, item) => sum + item.budget, 0);
@@ -39,6 +40,7 @@ const DashboardScreen = () => {
       setTotalExpense(expenseSum);
       setBudgetTotal(budgetSum);
       setTotalIncome(incomeVal);
+      setIncomePresent(Boolean(incomeHas));
     } catch (err) {
       console.error("loadDashboardData error:", err);
       Alert.alert("Error", "Failed to load dashboard data.");
@@ -57,7 +59,11 @@ const DashboardScreen = () => {
       {/* Summary Cards */}
       <View style={styles.row}>
         <TouchableOpacity onPress={() => navigation.navigate("Income")} style={{ flex: 1 }}>
-          <SummaryCard title="Income" amount={totalIncome} color="#4CAF50" />
+          <SummaryCard
+            title="Income"
+            amount={incomePresent ? totalIncome : "Tap to add income"}
+            color="#4CAF50"
+          />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Expenses")} style={{ flex: 1 }}>
           <SummaryCard title="Expenses" amount={totalExpense} color="#F44336" />

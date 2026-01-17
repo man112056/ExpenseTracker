@@ -4,7 +4,7 @@ import { useTheme } from "../theme/ThemeContext";
 
 interface SummaryCardProps {
   title: string;
-  amount: number;
+  amount: number | string;
   color: string;
 }
 
@@ -26,7 +26,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
         {title}
       </Text>
       <Text style={[styles.amount, { color: colors.text }]}>
-        ₹ {amount}
+        {typeof amount === 'number' ? `₹ ${amount}` : amount}
       </Text>
     </View>
   );
