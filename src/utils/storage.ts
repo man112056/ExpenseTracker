@@ -42,7 +42,25 @@ export const saveCategories = async (categories: Category[]) => {
 export const getCategories = async (): Promise<Category[]> => {
   try {
     const data = await AsyncStorage.getItem(CATEGORIES_KEY);
-    return data ? JSON.parse(data) : [];
+    if (data) {
+      return JSON.parse(data);
+    }
+
+    // Initialize with sensible defaults on first run
+    const defaults: Category[] = [
+      { id: Date.now().toString(), name: "Food", budget: 5000 },
+      { id: (Date.now() + 1).toString(), name: "Transport", budget: 2000 },
+      { id: (Date.now() + 2).toString(), name: "Entertainment", budget: 3000 },
+      { id: (Date.now() + 3).toString(), name: "Misc", budget: 0 },
+    ];
+
+    try {
+      await AsyncStorage.setItem(CATEGORIES_KEY, JSON.stringify(defaults));
+    } catch (e) {
+      console.error('getCategories: failed to persist defaults', e);
+    }
+
+    return defaults;
   } catch (err) {
     console.error("getCategories error:", err);
     throw new Error("Unable to load categories.");

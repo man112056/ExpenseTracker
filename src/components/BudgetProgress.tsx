@@ -5,16 +5,19 @@ import { useTheme } from "../theme/ThemeContext";
 interface BudgetProgressProps {
   used: number;
   total: number;
+  hasCategories?: boolean;
 }
 
 const BudgetProgress: React.FC<BudgetProgressProps> = ({
   used,
   total,
+  hasCategories = false,
 }) => {
   const { colors } = useTheme();
   const progress = total > 0 ? Math.min(100, (used / total) * 100) : 0;
 
-  if (total <= 0) {
+  // show "no budgets" only when there are no categories configured
+  if (!hasCategories) {
     return (
       <View style={[styles.container, { backgroundColor: colors.card }]}> 
         <Text style={[styles.label, { color: colors.text }]}>Monthly Budget</Text>

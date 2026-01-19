@@ -18,6 +18,7 @@ const DashboardScreen = () => {
   const [totalExpense, setTotalExpense] = useState(0);
   const [totalIncome, setTotalIncome] = useState(50000);
   const [incomePresent, setIncomePresent] = useState(true);
+  const [hasCategories, setHasCategories] = useState(false);
   const [budgetTotal, setBudgetTotal] = useState(0);
 
   /* ---------- LOAD DATA WHEN SCREEN OPENS ---------- */
@@ -41,6 +42,7 @@ const DashboardScreen = () => {
       setBudgetTotal(budgetSum);
       setTotalIncome(incomeVal);
       setIncomePresent(Boolean(incomeHas));
+      setHasCategories(categories && categories.length > 0);
     } catch (err) {
       console.error("loadDashboardData error:", err);
       Alert.alert("Error", "Failed to load dashboard data.");
@@ -77,7 +79,7 @@ const DashboardScreen = () => {
       />
 
       {/* Budget Progress */}
-      <BudgetProgress used={totalExpense} total={budgetTotal} />
+      <BudgetProgress used={totalExpense} total={budgetTotal} hasCategories={hasCategories} />
 
       {/* Quick Actions */}
       <QuickActions />

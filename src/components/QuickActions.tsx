@@ -37,7 +37,7 @@ const QuickActions = () => {
 
       <ActionButton
         label="Reports"
-        onPress={() => navigation.navigate("Dashboard")}
+        onPress={() => navigation.navigate("Reports")}
         bg={colors.card}
         color={colors.text}
       />

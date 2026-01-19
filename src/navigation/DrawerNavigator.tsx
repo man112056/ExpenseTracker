@@ -7,6 +7,7 @@ import CategoryManagementScreen from "../screens/CategoryManagementScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ExpenseListScreen from "../screens/ExpenseListScreen";
 import EditIncomeScreen from "../screens/EditIncomeScreen";
+import ReportScreen from "../screens/ReportScreen";
 import { useTheme } from "../theme/ThemeContext";
 import { launchImageLibrary } from 'react-native-image-picker';
 import { getProfileImage, saveProfileImage, getProfile } from "../utils/storage";
@@ -148,6 +149,7 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="Add Expense" component={AddExpenseScreen} />
       <Drawer.Screen name="Categories" component={CategoryManagementScreen} />
       <Drawer.Screen name="Income" component={EditIncomeScreen} />
+      <Drawer.Screen name="Reports" component={ReportScreen} />
       <Drawer.Screen name="Expenses" component={ExpenseListScreen} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
     </Drawer.Navigator>
